@@ -1,4 +1,4 @@
-package com.sheepfly.common.services;
+package com.sheepfly.common.services.interfaces.impls;
 
 import org.apache.commons.cli.CommandLine;
 import org.dom4j.Document;
@@ -33,7 +33,7 @@ import java.util.Properties;
  *
  * @author sheepfly
  */
-public class Gradle2PomService {
+public class Gradle2PomService extends AbstractDefaultServiceImpl {
     private static final Logger log = LoggerFactory.getLogger(Gradle2PomService.class);
 
     /**
@@ -62,6 +62,7 @@ public class Gradle2PomService {
      *
      * @param cli 命令行参数
      */
+    @Override
     public void init(CommandLine cli) {
         this.cli = cli;
         this.buildFilePath = cli.getOptionValue("b");
@@ -74,6 +75,7 @@ public class Gradle2PomService {
     /**
      * 开始服务。
      */
+    @Override
     public void doService() {
         this.loadBuildFile();
         if (this.versionPath != null) {

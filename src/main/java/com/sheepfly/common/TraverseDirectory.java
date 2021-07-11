@@ -1,5 +1,7 @@
 package com.sheepfly.common;
 
+import com.sheepfly.common.utils.FileUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,7 +36,10 @@ public class TraverseDirectory {
         if (args.length == 2) {
             System.out.println("遍历结果将写入文件:" + args[1]);
             String resultFilePath = args[1];
-            File resultFile = new File(path + File.separator + resultFilePath);
+            if (!(resultFilePath.startsWith("\\") || resultFilePath.startsWith("/"))) {
+                resultFilePath = path + File.separator + resultFilePath;
+            }
+            File resultFile = new File(resultFilePath);
             if (!resultFile.exists()) {
                 try {
                     resultFile.createNewFile();
@@ -62,7 +67,7 @@ public class TraverseDirectory {
 
     public static void doTraverse(File path, int deep) {
         System.out.println(printPath(path.getName(), deep, true));
-        String[] list = path.list();
+        String[] list = FileUtil.list(path.getAbsolutePath());
         for (String ele : list) {
             File file = new File(path + File.separator + ele);
             if (file.isDirectory()) {

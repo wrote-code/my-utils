@@ -19,6 +19,8 @@ public class FileUtil {
     /**
      * 列出当前文件夹内容。
      *
+     * <p>默认情况下，目录放在文件前面。</p>
+     *
      * @param dir 要列出内容的目录
      *
      * @return 目录中的内容

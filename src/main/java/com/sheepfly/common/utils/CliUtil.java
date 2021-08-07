@@ -36,8 +36,7 @@ public class CliUtil {
         Options options = new Options();
         optionList.forEach(ele -> {
             if (ele.containsKey(OPTION_KEY.OPT) && ele.containsKey(OPTION_KEY.DESCRIPTION)) {
-                Option option = new Option(ele.get(OPTION_KEY.OPT).toString(),
-                        (Boolean) ele.get(OPTION_KEY.HAS_ARGS),
+                Option option = new Option(ele.get(OPTION_KEY.OPT).toString(), (Boolean) ele.get(OPTION_KEY.HAS_ARGS),
                         ele.get(OPTION_KEY.LONG_OPT).toString());
                 if (ele.containsKey(OPTION_KEY.LONG_OPT)) {
                     option.setLongOpt(ele.get(OPTION_KEY.LONG_OPT).toString());

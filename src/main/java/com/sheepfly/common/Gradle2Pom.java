@@ -28,7 +28,9 @@ import org.slf4j.LoggerFactory;
  * <p>创建的pom文件会放在和build.gradle通目录的位置。若此目录已经有pom.xml文件，则会覆盖。</p>
  *
  * @author sheepfly
+ * @deprecated 请学习gradle。
  */
+@Deprecated
 public class Gradle2Pom {
     private static final Logger log = LoggerFactory.getLogger(Gradle2Pom.class);
 

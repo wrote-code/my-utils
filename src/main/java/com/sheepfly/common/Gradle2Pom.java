@@ -47,9 +47,9 @@ public class Gradle2Pom {
         try {
             cli = parser.parse(options, args);
         } catch (ParseException e) {
-            log.error("参数错误", e);
             String usage = "Gradle2Pom -b <buildFile> [-v <versionFile>]";
             helpFormatter.printHelp(usage, options);
+            log.error("参数错误:" + e.getMessage());
             return;
         }
         Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());

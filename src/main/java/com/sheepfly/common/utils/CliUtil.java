@@ -14,7 +14,7 @@ import java.util.Map;
  * @author sheepfly
  */
 public class CliUtil {
-    private static Logger log = LoggerFactory.getLogger(CliUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(CliUtil.class);
 
     /**
      * 生成参数对应的{@link Options}
@@ -37,7 +37,10 @@ public class CliUtil {
         optionList.forEach(ele -> {
             if (ele.containsKey(OPTION_KEY.OPT) && ele.containsKey(OPTION_KEY.DESCRIPTION)) {
                 Option option = new Option(ele.get(OPTION_KEY.OPT).toString(), (Boolean) ele.get(OPTION_KEY.HAS_ARGS),
-                        ele.get(OPTION_KEY.LONG_OPT).toString());
+                        ele.get(OPTION_KEY.DESCRIPTION).toString());
+                if (ele.containsKey(OPTION_KEY.ARG_NAME)) {
+                    option.setArgName(ele.get(OPTION_KEY.ARG_NAME).toString());
+                }
                 if (ele.containsKey(OPTION_KEY.LONG_OPT)) {
                     option.setLongOpt(ele.get(OPTION_KEY.LONG_OPT).toString());
                 }

@@ -10,9 +10,6 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 /**
  * {@link Service}的默认实现。
  *
@@ -30,14 +27,18 @@ public abstract class AbstractDefaultServiceImpl implements Service {
     /**
      * 命令行参数。
      */
+    private Options options;
+    /**
+     * 命令行参数。
+     */
     private CommandLine cli;
     /**
-     * 必须传入的命令行参数。
+     * 没有解析的命令行参数。
      */
     private String[] args;
 
     /**
-     * 原市参数，即main方法的参数。
+     * 原始参数，即main方法的参数。
      */
     private String[] rawArgs;
 
@@ -67,24 +68,13 @@ public abstract class AbstractDefaultServiceImpl implements Service {
      */
     @Override
     public void init(String[] args) {
-        this.rawArgs = cli.getArgs();
-        String serviceName = this.getClass().getName();
-        serviceName = serviceName.substring(serviceName.lastIndexOf(".") + 1, serviceName.length());
-        String methodName = "build" + serviceName.replace("Service", "") + "Option";
         try {
-            Method method = OptionUtil.class.getMethod(methodName);
-            Object result = method.invoke(OptionUtil.class);
             CommandLineParser parser = new DefaultParser();
-            CommandLine cli = parser.parse((Options) result, args);
+            CommandLine cli = parser.parse(OptionUtil.buildOptions(this.getClass()), args);
             this.cli = cli;
             this.args = cli.getArgs();
+            this.rawArgs = cli.getArgs();
             log.info("参数解析完成");
-        } catch (NoSuchMethodException e) {
-            log.error("没有对应的方法", e);
-        } catch (IllegalAccessException e) {
-            log.error("非法访问", e);
-        } catch (InvocationTargetException e) {
-            log.error("调用异常", e);
         } catch (ParseException e) {
             log.error("参数解析失败", e);
         }

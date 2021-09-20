@@ -8,6 +8,5 @@ public class AbstractDefaultServiceImplTest {
     public void testInit() {
         Service service = new Gradle2PomService();
         service.init(new String[4]);
-        System.out.println(service);
     }
 }

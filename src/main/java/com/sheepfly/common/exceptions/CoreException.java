@@ -5,7 +5,7 @@ package com.sheepfly.common.exceptions;
  *
  * @author sheepfly
  */
-public class CoreException extends Throwable{
+public class CoreException extends Exception {
     public CoreException(String message) {
         super(message);
     }

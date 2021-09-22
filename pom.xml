@@ -50,6 +50,13 @@
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
     </dependency>
+
+    <!-- lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.16</version>
+    </dependency>
   </dependencies>
 
 </project>

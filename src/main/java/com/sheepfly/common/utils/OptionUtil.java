@@ -1,6 +1,8 @@
 package com.sheepfly.common.utils;
 
+import com.sheepfly.common.services.interfaces.Service;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +29,18 @@ import java.util.Map;
  */
 public class OptionUtil {
     private static final Logger log = LoggerFactory.getLogger(OptionUtil.class);
+    /**
+     * 主类所在包包名。
+     */
     private static final String MAIN_PACKAGE = "com.sheepfly.common";
+    /**
+     * {@link Service}实现所在包包名。
+     */
+    private static final String IMPL_PACKAGE = "com.sheepfly.common.services.interfaces.impls";
 
     public static Options buildGradle2PomOptions() {
         List<Map<OPTION_KEY, Object>> optionList = new ArrayList<>();
-        Map<OPTION_KEY, Object> version = new HashMap<>(4);
+        EnumMap<OPTION_KEY, Object> version = new EnumMap<>(OPTION_KEY.class);
 
         version.put(OPTION_KEY.OPT, "v");
         version.put(OPTION_KEY.LONG_OPT, "version");
@@ -39,7 +48,7 @@ public class OptionUtil {
         version.put(OPTION_KEY.DESCRIPTION, "版本号文件路径");
         optionList.add(version);
 
-        Map<OPTION_KEY, Object> build = new HashMap<>(5);
+        EnumMap<OPTION_KEY, Object> build = new EnumMap<>(OPTION_KEY.class);
         build.put(OPTION_KEY.OPT, "b");
         build.put(OPTION_KEY.LONG_OPT, "buildfile");
         build.put(OPTION_KEY.REQUIRED, true);
@@ -48,6 +57,25 @@ public class OptionUtil {
         optionList.add(build);
 
         return CliUtil.buildOptions(optionList);
+    }
+
+    public static Options buildTraverseDirectoryOptions() {
+        Options options = new Options();
+        // 输出文件
+        Option file = new Option("of", "outputFile", true, "输出文件");
+        file.setArgs(1);
+        options.addOption(file);
+        Option prefix = new Option("dp", "directoryPrefix", true, "目录树前缀");
+        options.addOption(prefix);
+        Option directorySeparator = new Option("fp", "filePrefix", true,
+                "文件或目录前缀");
+        options.addOption(directorySeparator);
+        Option show = new Option("s", "show", false, "是否在终端输出目录树");
+        options.addOption(show);
+        Option fileType = new Option("ft", "fileType", true, "输出文件类型");
+        fileType.setArgs(1);
+        options.addOption(fileType);
+        return options;
     }
 
     /**
@@ -60,11 +88,13 @@ public class OptionUtil {
      *
      * @return 主方法所在类对应的Options。
      */
-    public static Options buildOptions(Class clazz) {
-        if (!OptionUtil.MAIN_PACKAGE.equals(clazz.getPackage().getName())) {
-            throw new IllegalArgumentException("参数错误:" + clazz.getPackage());
+    public static <T> Options buildOptions(Class<T> clazz) {
+        String simpleName;
+        if (!clazz.getPackage().getName().equals(IMPL_PACKAGE)) {
+            throw new IllegalArgumentException("参数错误，传入的类型不正确：" + clazz);
+        } else {
+            simpleName = clazz.getSimpleName().replace("ServiceImpl", "");
         }
-        String simpleName = clazz.getSimpleName();
         String optionMethod = "build" +
                 simpleName.substring(0, 1).toUpperCase() +
                 simpleName.substring(1) + "Options";

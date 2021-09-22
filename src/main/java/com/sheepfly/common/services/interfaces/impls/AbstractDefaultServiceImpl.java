@@ -2,6 +2,7 @@ package com.sheepfly.common.services.interfaces.impls;
 
 import com.sheepfly.common.services.interfaces.Service;
 import com.sheepfly.common.utils.OptionUtil;
+import lombok.Data;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -15,12 +16,19 @@ import org.slf4j.LoggerFactory;
  *
  * <p>默认实现会设置程序的命令行参数。</p>
  *
- * <p>命令行参数有两种类型，一种是必须传入的参数，比如{@code node hello.js}中，hello.js就是必须传入
- * 的参数。另一种是可选参数，即以{@code -}家字符描述的参数。在初始化时，会讲这两种参数分别保存在成员变量
- * cli和args中。</p>
+ * <p>在默认情况下，会将解析后的参数放入{@link AbstractDefaultServiceImpl#cli}中，同时将
+ * 没有解析的参数放入{@link AbstractDefaultServiceImpl#args}中。另外，程序的原始参数，即从
+ * 主方法中传入的参数，会保存在{@link AbstractDefaultServiceImpl#rawArgs}中。
+ * </p>
+ *
+ * <p>通常，{@link Service}的实现中会有自己的参数，这些参数会保存在成员变量中。可以在具体实现中
+ * 初始化这些成员变量，建议在初始化前调用{@link AbstractDefaultServiceImpl#init(String[])}
+ * 或者{@link AbstractDefaultServiceImpl#init(CommandLine)}。
+ * </p>
  *
  * @author sheepfly
  */
+@Data
 public abstract class AbstractDefaultServiceImpl implements Service {
     private static final Logger log = LoggerFactory.getLogger(AbstractDefaultServiceImpl.class);
 
@@ -49,15 +57,6 @@ public abstract class AbstractDefaultServiceImpl implements Service {
     }
 
     /**
-     * 此方法请自行实现，此处实现为应对语法检查。
-     */
-    @Override
-    public void doService() {
-        log.warn("此方法请自行实现，此处实现为应对语法检查");
-    }
-
-
-    /**
      * 初始化方法。
      *
      * <p>传入参数后，将参数分别解析为由横线定义的参数和剩余参数。例如，对于命令{@code java -cp
@@ -70,10 +69,10 @@ public abstract class AbstractDefaultServiceImpl implements Service {
     public void init(String[] args) {
         try {
             CommandLineParser parser = new DefaultParser();
-            CommandLine cli = parser.parse(OptionUtil.buildOptions(this.getClass()), args);
-            this.cli = cli;
-            this.args = cli.getArgs();
-            this.rawArgs = cli.getArgs();
+            CommandLine parsedCli = parser.parse(OptionUtil.buildOptions(this.getClass()), args);
+            this.cli = parsedCli;
+            this.args = parsedCli.getArgs();
+            this.rawArgs = parsedCli.getArgs();
             log.info("参数解析完成");
         } catch (ParseException e) {
             log.error("参数解析失败", e);

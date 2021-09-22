@@ -3,7 +3,7 @@
     <encoder>
       <pattern>
         %date{yyyy-MM-dd hh:mm:ss:SSS} %-5level [%thread]
-        %class . %method - line %line
+        %class#%method:%line
         %message%n
       </pattern>
     </encoder>

@@ -4,4 +4,5 @@ out
 classes
 target
 **/ApplicationTest.java
+**/Application.java
 javadoc
